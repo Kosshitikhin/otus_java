@@ -1,1 +1,1 @@
-# Учебный проект по java 
+# Trainee project
