@@ -3,4 +3,4 @@ include 'HW01-gradle'
 include 'HW02-collections'
 include 'HW03-annotation'
 include 'HW04-gc'
-
+include 'HW05-aop'
