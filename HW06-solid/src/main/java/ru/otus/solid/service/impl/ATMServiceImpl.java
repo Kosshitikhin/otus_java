@@ -19,14 +19,12 @@ public class ATMServiceImpl implements ATMService {
     }
 
     @Override
-    public List<CashBox> getCash(int sum) {
+    public void getCash(int sum) {
         var cashBoxList = CashUtils.toCash(cashBoxRepository.getAvailableCash(), sum);
 
         for (var cashBox : cashBoxList) {
             cashBoxRepository.removeCashFromCashBox(cashBox);
         }
-
-        return cashBoxList;
     }
 
     @Override

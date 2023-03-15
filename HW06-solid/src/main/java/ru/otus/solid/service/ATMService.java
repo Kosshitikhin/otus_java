@@ -8,7 +8,7 @@ public interface ATMService {
 
     void putCash(List<CashBox> cashBoxList);
 
-    List<CashBox> getCash(int sum);
+    void getCash(int sum);
 
     List<CashBox> getAvailableCash();
 
