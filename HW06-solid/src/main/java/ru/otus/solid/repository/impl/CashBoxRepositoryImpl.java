@@ -1,15 +1,15 @@
 package ru.otus.solid.repository.impl;
 
-import lombok.Data;
-import ru.otus.solid.exception.NotEnoughCashException;
-import ru.otus.solid.exception.NotFoundException;
+import lombok.AllArgsConstructor;
+import ru.otus.solid.exception.ATMException;
 import ru.otus.solid.model.ATM;
 import ru.otus.solid.model.CashBox;
 import ru.otus.solid.repository.CashBoxRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@AllArgsConstructor
 public class CashBoxRepositoryImpl implements CashBoxRepository {
 
     private final ATM atm;
@@ -29,7 +29,7 @@ public class CashBoxRepositoryImpl implements CashBoxRepository {
         var atmCashBox = checkAndGetCashBox(cashBox);
 
         if (cashBox.getCount() > atmCashBox.getCount()) {
-            throw new NotEnoughCashException(String.format("Не достаточно купюр номиналом %s", cashBox.getNominal()));
+            throw ATMException.notEnough(String.format("Не достаточно купюр номиналом %s", cashBox.getNominal()));
         }
         atmCashBox.setCount(atmCashBox.getCount() - cashBox.getCount());
     }
@@ -39,9 +39,33 @@ public class CashBoxRepositoryImpl implements CashBoxRepository {
         return atm.getCashBoxList();
     }
 
+    @Override
+    public List<CashBox> toCash(List<CashBox> cashBoxList, int sum) {
+        List<CashBox> resultCashBoxList = new ArrayList<>();
+
+        for (CashBox cashBox : cashBoxList) {
+            var nominalValue = cashBox.getNominal().getValue();
+
+            if (sum >= nominalValue) {
+                var count = getCount(sum, nominalValue, cashBox.getCount());
+                sum -= nominalValue * count;
+                resultCashBoxList.add(new CashBox(cashBox.getNominal(), count));
+            }
+        }
+
+        if (sum > 0) throw ATMException.convert("В источнике недостаточно денежных средств");
+
+        return resultCashBoxList;
+    }
+
+    private static int getCount(int sum, int nominalValue, int sourceCashCount) {
+        int count = sum / nominalValue;
+        return sourceCashCount - count >= 0 ? count : sourceCashCount;
+    }
+
     private CashBox checkAndGetCashBox(CashBox cashBox) {
         return atm.getCashBoxList().stream()
                 .filter(cb -> cb.equals(cashBox))
-                .findFirst().orElseThrow(() -> new NotFoundException(String.format("Ячейки с номиналом %s не найдена", cashBox.getNominal())));
+                .findFirst().orElseThrow(() -> ATMException.notFound(String.format("Ячейка с номиналом %s не найдена", cashBox.getNominal())));
     }
 }

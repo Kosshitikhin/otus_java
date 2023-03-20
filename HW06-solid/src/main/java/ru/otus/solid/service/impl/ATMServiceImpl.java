@@ -1,14 +1,13 @@
 package ru.otus.solid.service.impl;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
 import ru.otus.solid.model.CashBox;
 import ru.otus.solid.repository.CashBoxRepository;
 import ru.otus.solid.service.ATMService;
-import ru.otus.solid.util.CashUtils;
 
 import java.util.List;
 
-@Data
+@AllArgsConstructor
 public class ATMServiceImpl implements ATMService {
 
     private final CashBoxRepository cashBoxRepository;
@@ -20,7 +19,7 @@ public class ATMServiceImpl implements ATMService {
 
     @Override
     public void getCash(int sum) {
-        var cashBoxList = CashUtils.toCash(cashBoxRepository.getAvailableCash(), sum);
+        var cashBoxList = cashBoxRepository.toCash(cashBoxRepository.getAvailableCash(), sum);
 
         for (var cashBox : cashBoxList) {
             cashBoxRepository.removeCashFromCashBox(cashBox);
@@ -31,4 +30,5 @@ public class ATMServiceImpl implements ATMService {
     public List<CashBox> getAvailableCash() {
         return cashBoxRepository.getAvailableCash();
     }
+
 }

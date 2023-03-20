@@ -3,7 +3,7 @@ package ru.otus.solid.service.impl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.otus.solid.exception.ConvertException;
+import ru.otus.solid.exception.ATMException;
 import ru.otus.solid.model.ATM;
 import ru.otus.solid.model.CashBox;
 import ru.otus.solid.repository.impl.CashBoxRepositoryImpl;
@@ -23,12 +23,12 @@ class ATMServiceImplTest {
     @BeforeEach
     public void init() {
         var cashBoxList = new ArrayList<CashBox>();
-        cashBoxList.add(new CashBox(RU_100, 1));
-        cashBoxList.add(new CashBox(RU_200, 1));
-        cashBoxList.add(new CashBox(RU_500, 1));
-        cashBoxList.add(new CashBox(RU_1000, 1));
-        cashBoxList.add(new CashBox(RU_2000, 1));
         cashBoxList.add(new CashBox(RU_5000, 1));
+        cashBoxList.add(new CashBox(RU_2000, 1));
+        cashBoxList.add(new CashBox(RU_1000, 1));
+        cashBoxList.add(new CashBox(RU_500, 1));
+        cashBoxList.add(new CashBox(RU_200, 1));
+        cashBoxList.add(new CashBox(RU_100, 1));
 
         var atm = new ATM(cashBoxList);
         var cashBoxRepository = new CashBoxRepositoryImpl(atm);
@@ -72,7 +72,7 @@ class ATMServiceImplTest {
     @Test
     public void getCashWithException() {
         var sum = 9000;
-        assertThrows(ConvertException.class, () -> atmService.getCash(sum));
+        assertThrows(ATMException.class, () -> atmService.getCash(sum));
     }
 
     private int getSum(List<CashBox> cashBoxList) {

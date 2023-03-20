@@ -11,4 +11,6 @@ public interface CashBoxRepository {
     void removeCashFromCashBox(CashBox cashBox);
 
     List<CashBox> getAvailableCash();
+
+    List<CashBox> toCash(List<CashBox> cashBoxList, int sum);
 }
