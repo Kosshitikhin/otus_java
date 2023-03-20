@@ -1,7 +1,5 @@
 package ru.otus.model;
 
-import java.util.ArrayList;
-
 public class Message {
     private final long id;
     private final String field1;
@@ -18,26 +16,6 @@ public class Message {
     private final String field11;
     private final String field12;
     private final ObjectForMessage field13;
-
-    public Message(Message msg) {
-        this.id = msg.getId();
-        this.field1 = msg.field1;
-        this.field2 = msg.field2;
-        this.field3 = msg.field3;
-        this.field4 = msg.field4;
-        this.field5 = msg.field5;
-        this.field6 = msg.field6;
-        this.field7 = msg.field7;
-        this.field8 = msg.field8;
-        this.field9 = msg.field9;
-        this.field10 = msg.field10;
-        this.field11 = msg.field11;
-        this.field12 = msg.field12;
-        this.field13 = new ObjectForMessage();
-        if (msg.field13.getData() != null) {
-            this.field13.setData(new ArrayList<>(msg.getField13().getData()));
-        }
-    }
 
     private Message(long id,
                     String field1,
@@ -68,6 +46,8 @@ public class Message {
         this.field12 = field12;
         this.field13 = field13;
     }
+
+
 
     public long getId() {
         return id;
@@ -125,6 +105,7 @@ public class Message {
         return field13;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -162,6 +143,24 @@ public class Message {
                 ", field12='" + field12 + '\'' +
                 ", field13='" + field13 + '\'' +
                 '}';
+    }
+
+    public Message createMessage() {
+        return new Builder(this.getId())
+                .field1(this.field1)
+                .field2(this.field2)
+                .field3(this.field3)
+                .field4(this.field4)
+                .field5(this.field5)
+                .field6(this.field6)
+                .field7(this.field7)
+                .field8(this.field8)
+                .field9(this.field9)
+                .field10(this.field10)
+                .field11(this.field11)
+                .field12(this.field12)
+                .field13(this.field13)
+                .build();
     }
 
     public static class Builder {
