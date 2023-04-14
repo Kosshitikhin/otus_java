@@ -26,7 +26,7 @@ public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData {
 
     @Override
     public String getSelectAllSql() {
-        return String.format("select %s fro %s", allFields, entityClassMetaData.getName());
+        return String.format("select * from %s", entityClassMetaData.getName());
     }
 
     @Override
