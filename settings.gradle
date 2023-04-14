@@ -7,3 +7,5 @@ include 'HW05-aop'
 include 'HW06-solid'
 include 'HW07-patterns'
 include 'HW08-serialization'
+include 'HW10-hibernate'
+
