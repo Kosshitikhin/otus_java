@@ -5,43 +5,51 @@ import java.util.stream.Collectors;
 
 public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData {
 
-    private final EntityClassMetaData<T> entityClassMetaData;
-    private final String allFields;
-    private final String fieldsWithoutId;
-    private final String fieldsWithoutIdPlaceholder;
+    private final String selectAllSql;
+    private final String selectByIdSql;
+    private final String insertSql;
+    private final String updateSql;
 
     public EntitySQLMetaDataImpl(EntityClassMetaData<T> entityClassMetaData) {
-        this.entityClassMetaData = entityClassMetaData;
-        this.allFields = entityClassMetaData.getAllFields().stream()
+        var className = entityClassMetaData.getName();
+        var idFieldName = entityClassMetaData.getIdField().getName();
+
+        var allFields = entityClassMetaData.getAllFields().stream()
                 .map(Field::getName)
                 .collect(Collectors.joining(","));
-        this.fieldsWithoutId = entityClassMetaData.getFieldsWithoutId().stream()
+
+        var fieldsWithoutId = entityClassMetaData.getFieldsWithoutId().stream()
                 .map(Field::getName)
                 .collect(Collectors.joining(","));
-        this.fieldsWithoutIdPlaceholder = entityClassMetaData.getFieldsWithoutId().stream()
+
+        var fieldsWithoutIdPlaceholder = entityClassMetaData.getFieldsWithoutId().stream()
                 .map(name -> "?")
                 .collect(Collectors.joining(","));
 
+        this.selectAllSql = String.format("select * from %s", entityClassMetaData.getName());
+        this.selectByIdSql = String.format("select %s from %s where %s = ?", allFields, className, idFieldName);
+        this.insertSql = String.format("insert into %s(%s) values (%s)", className, fieldsWithoutId, fieldsWithoutIdPlaceholder);
+        this.updateSql = String.format("update %s set (%s) where %s = ?", className, fieldsWithoutId, idFieldName);
     }
 
     @Override
     public String getSelectAllSql() {
-        return String.format("select * from %s", entityClassMetaData.getName());
+        return selectAllSql;
     }
 
     @Override
     public String getSelectByIdSql() {
-        return String.format("select %s from %s where %s = ?", allFields, entityClassMetaData.getName(), entityClassMetaData.getIdField().getName());
+        return selectByIdSql;
     }
 
     @Override
     public String getInsertSql() {
-        return String.format("insert into %s(%s) values (%s)", entityClassMetaData.getName(), fieldsWithoutId, fieldsWithoutIdPlaceholder);
+        return insertSql;
     }
 
     @Override
     public String getUpdateSql() {
-        return String.format("update %s set (%s) where %s = ?", entityClassMetaData.getName(), fieldsWithoutId, entityClassMetaData.getIdField().getName());
+        return updateSql;
     }
 
 }
